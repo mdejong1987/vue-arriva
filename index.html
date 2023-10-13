@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Arriva Bus Times</title>
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.4/css/bulma.min.css">
+</head>
+<body>
+    <div id="app">
+        {{getData}}
+
+        <div v-for="bus in left">
+            {{ formatDate(bus.ExpectedArrivalTime) }}
+            test
+            {{ formatDate(bus.TargetArrivalTime) }}
+        </div>
+
+        <div v-for="bus in right">
+            {{ formatDate(bus.ExpectedArrivalTime) }}
+            test 2
+            {{ formatDate(bus.TargetArrivalTime) }}
+        </div>
+
+
+        
+    </div>
+    <script>
+        Vue.createApp({
+            data(){
+                return {
+                    left: {},
+                    right: {}
+                }
+            },
+            computed: {    
+                getData() {
+                    const url = 'https://v0.ovapi.nl/stopareacode/BdOud';
+                    let options = {
+                        method: 'GET'
+                    }
+                    let response = fetch(url, options).then((response) => response.json()).then((data) => {
+                        this.left = Object.values(data.BdOud[72000640].Passes).sort((a, b) => a.TargetArrivalTime.localeCompare(b.TargetArrivalTime));
+                        this.right = Object.values(data.BdOud[72000810].Passes).sort((a, b) => a.TargetArrivalTime.localeCompare(b.TargetArrivalTime));
+                    });
+                }
+            },
+            methods: {
+                translate(status) {
+                    let translatedStatus;
+
+                    switch (status) {
+                    case 'PLANNED':
+                        translatedStatus = 'Gepland';
+                        break;
+                    case 'PASSED':
+                        translatedStatus = 'Gepasseerd';
+                        break;
+                    case 'CANCEL':
+                        translatedStatus = 'Geannuleerd';
+                        break;
+                    case 'DRIVING':
+                        translatedStatus = 'Rijden';
+                        break;
+                    default:
+                        translatedStatus = 'Onbekend'; // Default translation for unknown status
+                    }
+
+                    return translatedStatus;
+                },
+                formatDate(value){
+                    return new Date(value).toLocaleTimeString('nl-NL', { hour: '2-digit', minute:'2-digit' });
+                }
+            }
+        }).mount('#app');
+    </script>
+</body>
+</html>

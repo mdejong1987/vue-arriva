@@ -1,0 +1,51 @@
+        <div v-for="bus in left">
+            {{ formatDate(bus.ExpectedArrivalTime) }}
+            {{ bus.TargetArrivalTime }}
+        </div>
+
+
+
+<table class="table">
+            <thead>
+                <tr>
+                    <th></th>
+                    <th>Status</th>
+                    <th>Naar</th>
+                    <th>Lijn</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr v-for="bus in left" >
+
+                    {{ bus.ExpectedArrivalTime }}
+                    {{ bus.TargetArrivalTime }}
+
+                    <td v-if="bus.ExpectedArrivalTime == bus.TargetArrivalTime">{{ new Date(bus.TargetArrivalTime).toLocaleTimeString('nl-NL', format)}}</td>
+                    <td style="color:red;" v-else><s>{{new Date(bus.TargetArrivalTime).toLocaleTimeString('nl-NL', format)}}</s> <br/>{{new Date(bus.TargetArrivalTime).toLocaleTimeString('nl-NL', format)}}</td>
+                    <td>{{translate(bus.TripStopStatus)}}</td>
+                    <td>{{bus.DestinationName50}}</td>
+                    <td>{{bus.LinePublicNumber}}</td>
+                </tr>
+            </tbody>
+        </table>
+
+
+        <table class="table">
+            <thead>
+                <tr>
+                    <th></th>
+                    <th>Status</th>
+                    <th>Naar</th>
+                    <th>Lijn</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr v-for="bus in right" >
+                    <td v-if="bus.ExpectedArrivalTime == bus.TargetArrivalTime">{{ new Date(bus.TargetArrivalTime).toLocaleTimeString('nl-NL', format)}}</td>
+                    <td style="color:red;" v-else><s>{{new Date(bus.TargetArrivalTime).toLocaleTimeString('nl-NL', format)}}</s> <br/>{{new Date(bus.TargetArrivalTime).toLocaleTimeString('nl-NL', format)}}</td>
+                    <td>{{translate(bus.TripStopStatus)}}</td>
+                    <td>{{bus.DestinationName50}}</td>
+                    <td>{{bus.LinePublicNumber}}</td>
+                </tr>
+            </tbody>
+        </table>
