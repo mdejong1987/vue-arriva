@@ -11,27 +11,41 @@
     <div id="app">
         {{getData}}
 
-        <div v-for="bus in left">
-            {{ formatDate(bus.ExpectedArrivalTime) }}
-            test
-            {{ formatDate(bus.TargetArrivalTime) }}
+        <div class="container">
+            <div v-for="bus in toCentral">
+                <div v-if="bus.ExpectedArrivalTime == bus.TargetArrivalTime">
+                    {{ formatDate(bus.TargetArrivalTime) }}
+                </div>
+                <div v-else>
+                    <s>{{ formatDate(bus.TargetArrivalTime) }}</s>
+                    {{ formatDate(bus.ExpectedArrivalTime) }}
+                </div>
+                Status: {{translate(bus.TripStopStatus)}}
+                Naar: {{bus.DestinationName50}}
+                Lijn: {{bus.LinePublicNumber}}
+            </div>
+            <hr>
+            <div v-for="bus in toRoute">
+                <div v-if="bus.ExpectedArrivalTime == bus.TargetArrivalTime">
+                    {{ formatDate(bus.TargetArrivalTime) }}
+                </div>
+                <div v-else>
+                    <s>{{ formatDate(bus.TargetArrivalTime) }}</s>
+                    {{ formatDate(bus.ExpectedArrivalTime) }}
+                </div>
+                Status: {{translate(bus.TripStopStatus)}}
+                Naar: {{bus.DestinationName50}}
+                Lijn: {{bus.LinePublicNumber}}
+            </div>
         </div>
-
-        <div v-for="bus in right">
-            {{ formatDate(bus.ExpectedArrivalTime) }}
-            test 2
-            {{ formatDate(bus.TargetArrivalTime) }}
-        </div>
-
-
         
     </div>
     <script>
         Vue.createApp({
             data(){
                 return {
-                    left: {},
-                    right: {}
+                    toCentral: {},
+                    toRoute: {}
                 }
             },
             computed: {    
@@ -41,12 +55,15 @@
                         method: 'GET'
                     }
                     let response = fetch(url, options).then((response) => response.json()).then((data) => {
-                        this.left = Object.values(data.BdOud[72000640].Passes).sort((a, b) => a.TargetArrivalTime.localeCompare(b.TargetArrivalTime));
-                        this.right = Object.values(data.BdOud[72000810].Passes).sort((a, b) => a.TargetArrivalTime.localeCompare(b.TargetArrivalTime));
+                        this.toCentral = Object.values(data.BdOud[72000640].Passes).sort((a, b) => a.TargetArrivalTime.localeCompare(b.TargetArrivalTime));
+                        this.toRoute = Object.values(data.BdOud[72000810].Passes).sort((a, b) => a.TargetArrivalTime.localeCompare(b.TargetArrivalTime));
                     });
                 }
             },
             methods: {
+                formatDate(value){
+                    return new Date(value).toLocaleTimeString('nl-NL', { hour: '2-digit', minute:'2-digit', second:'2-digit' });
+                },
                 translate(status) {
                     let translatedStatus;
 
@@ -69,9 +86,6 @@
 
                     return translatedStatus;
                 },
-                formatDate(value){
-                    return new Date(value).toLocaleTimeString('nl-NL', { hour: '2-digit', minute:'2-digit' });
-                }
             }
         }).mount('#app');
     </script>
