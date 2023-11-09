@@ -1,54 +1,82 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Arriva Bus Times</title>
     <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.4/css/bulma.min.css">
+    <script src="https://cdn.tailwindcss.com"></script>
 </head>
+
 <body>
     <div id="app">
         {{getData}}
-
-        <div class="container">
-            <div v-for="bus in toCentral">
-                <div v-if="bus.ExpectedArrivalTime == bus.TargetArrivalTime">
-                    {{ formatDate(bus.TargetArrivalTime) }}
-                </div>
-                <div v-else>
-                    <s>{{ formatDate(bus.TargetArrivalTime) }}</s>
-                    {{ formatDate(bus.ExpectedArrivalTime) }}
-                </div>
-                Status: {{translate(bus.TripStopStatus)}}
-                Naar: {{bus.DestinationName50}}
-                Lijn: {{bus.LinePublicNumber}}
-            </div>
-            <hr>
-            <div v-for="bus in toRoute">
-                <div v-if="bus.ExpectedArrivalTime == bus.TargetArrivalTime">
-                    {{ formatDate(bus.TargetArrivalTime) }}
-                </div>
-                <div v-else>
-                    <s>{{ formatDate(bus.TargetArrivalTime) }}</s>
-                    {{ formatDate(bus.ExpectedArrivalTime) }}
-                </div>
-                Status: {{translate(bus.TripStopStatus)}}
-                Naar: {{bus.DestinationName50}}
-                Lijn: {{bus.LinePublicNumber}}
-            </div>
+        <div class="toCentral">
+            <h2 class="text-4xl font-extrabold dark:text-white">Naar Centraal:</h2>
+            <table class="table-auto w-full text-gray-500 dark:text-gray-400">
+                <thead class="text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400 text-3xl">
+                    <tr class="text-center">
+                        <th></th>
+                        <th>Status</th>
+                        <th>Naar</th>
+                        <th>Lijn</th>
+                    </tr>
+                </thead>
+                <tbody class="text-3xl">
+                    <tr v-for="bus in toCentral" class="text-center border-b border-gray-200 dark:border-gray-700">
+                        <td v-if="bus.ExpectedArrivalTime == bus.TargetArrivalTime">
+                            {{ formatDate(bus.TargetArrivalTime) }}
+                        </td>
+                        <td v-else>
+                            <s>{{ formatDate(bus.TargetArrivalTime) }}</s>
+                            {{ formatDate(bus.ExpectedArrivalTime) }}
+                        </td>
+                        <td>{{translate(bus.TripStopStatus)}}</td>
+                        <td>{{bus.DestinationName50}}</td>
+                        <td>{{bus.LinePublicNumber}}</td>
+                    </tr>
+                </tbody>
+            </table>
         </div>
-        
+        <div class="toRoute">
+            <h2 class="text-4xl font-extrabold dark:text-white">Naar Route:</h2>
+            <table class="table-auto w-full text-gray-500 dark:text-gray-400 text-3xl">
+                <thead class="text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+                    <tr class="text-center">
+                        <th></th>
+                        <th>Status</th>
+                        <th>Naar</th>
+                        <th>Lijn</th>
+                    </tr>
+                </thead>
+                <tbody class="text-3xl">
+                    <tr v-for="bus in toRoute" class="text-center border-b border-gray-200 dark:border-gray-700">
+                        <td v-if="bus.ExpectedArrivalTime == bus.TargetArrivalTime">
+                            {{ formatDate(bus.TargetArrivalTime) }}
+                        </td>
+                        <td v-else>
+                            <s>{{ formatDate(bus.TargetArrivalTime) }}</s>
+                            {{ formatDate(bus.ExpectedArrivalTime) }}
+                        </td>
+                        <td>{{translate(bus.TripStopStatus)}}</td>
+                        <td>{{bus.DestinationName50}}</td>
+                        <td>{{bus.LinePublicNumber}}</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
     </div>
     <script>
         Vue.createApp({
-            data(){
+            data() {
                 return {
                     toCentral: {},
                     toRoute: {}
                 }
             },
-            computed: {    
+            computed: {
                 getData() {
                     const url = 'https://v0.ovapi.nl/stopareacode/BdOud';
                     let options = {
@@ -61,27 +89,27 @@
                 }
             },
             methods: {
-                formatDate(value){
-                    return new Date(value).toLocaleTimeString('nl-NL', { hour: '2-digit', minute:'2-digit', second:'2-digit' });
+                formatDate(value) {
+                    return new Date(value).toLocaleTimeString('nl-NL', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
                 },
                 translate(status) {
                     let translatedStatus;
 
                     switch (status) {
-                    case 'PLANNED':
-                        translatedStatus = 'Gepland';
-                        break;
-                    case 'PASSED':
-                        translatedStatus = 'Gepasseerd';
-                        break;
-                    case 'CANCEL':
-                        translatedStatus = 'Geannuleerd';
-                        break;
-                    case 'DRIVING':
-                        translatedStatus = 'Rijden';
-                        break;
-                    default:
-                        translatedStatus = 'Onbekend'; // Default translation for unknown status
+                        case 'PLANNED':
+                            translatedStatus = 'Gepland';
+                            break;
+                        case 'PASSED':
+                            translatedStatus = 'Gepasseerd';
+                            break;
+                        case 'CANCEL':
+                            translatedStatus = 'Geannuleerd';
+                            break;
+                        case 'DRIVING':
+                            translatedStatus = 'Rijden';
+                            break;
+                        default:
+                            translatedStatus = 'Onbekend'; // Default translation for unknown status
                     }
 
                     return translatedStatus;
@@ -90,4 +118,5 @@
         }).mount('#app');
     </script>
 </body>
+
 </html>
