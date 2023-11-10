@@ -7,66 +7,96 @@
     <title>Bus tijden</title>
     <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
     <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        curioPurple: '#69197c',
+                        curioGreen: '#56ddef',
+                        curioText: '#333333'
+                    }
+                }
+            }
+        }
+    </script>
 </head>
 
 <body>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Libre+Baskerville&family=Montserrat&family=Open+Sans&display=swap');
+
+        body,
+        html {
+            background-color: white;
+        }
+
+        h2 {
+            font-family: 'Montserrat', sans-serif;
+
+        }
+    </style>
     <div id="app">
         {{getData}}
-        <div class="toCentral">
-            <h2 class="text-4xl font-extrabold dark:text-white">Naar Centraal:</h2>
-            <table class="table-auto w-full text-gray-500 dark:text-gray-400">
-                <thead class="text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400 text-3xl">
+        <div class="toCentral text-curioText">
+            <h2 class="text-3xl bg-curioGreen text-curioPurple font-bold uppercase p-3">
+                Centraal <span class="text-base font-normal">( <b>Let op:</b> tijden zonder looptijd )</span>
+            </h2>
+            <table class="table-auto w-full">
+                <thead class="text-l bg-curioGreen text-curioPurple uppercase">
                     <tr class="text-center">
-                        <th></th>
-                        <th>Status</th>
-                        <th>Naar</th>
-                        <th>Lijn</th>
+                        <th class="p-1">Vertrektijd</th>
+                        <th class="p-1">Status</th>
+                        <th class="p-1">Naar</th>
+                        <th class="p-1">Lijn</th>
                     </tr>
                 </thead>
-                <tbody class="text-3xl">
-                    <tr v-for="bus in toCentral" class="text-center border-b border-gray-200 dark:border-gray-700">
-                        <td v-if="bus.ExpectedArrivalTime == bus.TargetArrivalTime">
+                <tbody class="text-2xl">
+                    <tr v-for="bus in toCentral.slice(0,5)" class="text-center border-b">
+                        <td class="p-1" v-if="bus.ExpectedArrivalTime == bus.TargetArrivalTime">
                             {{ formatDate(bus.TargetArrivalTime) }}
                         </td>
-                        <td v-else>
-                            <s>{{ formatDate(bus.TargetArrivalTime) }}</s>
-                            {{ formatDate(bus.ExpectedArrivalTime) }}
+                        <td v-else class="p-2">
+                            <div><s>{{ formatDate(bus.TargetArrivalTime) }}</s></div>
+                            <b style="color:red;">{{ formatDate(bus.ExpectedArrivalTime) }}</b>
                         </td>
-                        <td>{{translate(bus.TripStopStatus)}}</td>
-                        <td>{{bus.DestinationName50}}</td>
-                        <td>{{bus.LinePublicNumber}}</td>
+                        <td class="p-2">{{translate(bus.TripStopStatus)}}</td>
+                        <td class="p-2">{{bus.DestinationName50}}</td>
+                        <td class="p-2">{{bus.LinePublicNumber}}</td>
                     </tr>
                 </tbody>
             </table>
         </div>
-        <div class="toRoute">
-            <h2 class="text-4xl font-extrabold dark:text-white">Naar Route:</h2>
-            <table class="table-auto w-full text-gray-500 dark:text-gray-400 text-3xl">
-                <thead class="text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+        <div class="toRoute text-curioText">
+            <h2 class="text-3xl bg-curioGreen text-curioPurple font-bold uppercase p-3">
+                Route <span class="text-base font-normal">( <b>Let op:</b> tijden zonder looptijd )</span>
+            </h2>
+            <table class="table-auto w-full">
+                <thead class="text-1 bg-curioGreen text-curioPurple uppercase">
                     <tr class="text-center">
-                        <th></th>
-                        <th>Status</th>
-                        <th>Naar</th>
-                        <th>Lijn</th>
+                        <th class="p-1">Vertrektijd</th>
+                        <th class="p-1">Status</th>
+                        <th class="p-1">Naar</th>
+                        <th class="p-1">Lijn</th>
                     </tr>
                 </thead>
-                <tbody class="text-3xl">
-                    <tr v-for="bus in toRoute" class="text-center border-b border-gray-200 dark:border-gray-700">
-                        <td v-if="bus.ExpectedArrivalTime == bus.TargetArrivalTime">
+                <tbody class="text-2xl">
+                    <tr v-for="bus in toRoute.slice(0,5)" class="text-center border-b">
+                        <td class="p-2" v-if="bus.ExpectedArrivalTime == bus.TargetArrivalTime">
                             {{ formatDate(bus.TargetArrivalTime) }}
                         </td>
-                        <td v-else>
-                            <s>{{ formatDate(bus.TargetArrivalTime) }}</s>
-                            {{ formatDate(bus.ExpectedArrivalTime) }}
+                        <td v-else class="p-2">
+                            <div><s>{{ formatDate(bus.TargetArrivalTime) }}</s></div>
+                            <b style="color:red;">{{ formatDate(bus.ExpectedArrivalTime) }}</b>
                         </td>
-                        <td>{{translate(bus.TripStopStatus)}}</td>
-                        <td>{{bus.DestinationName50}}</td>
-                        <td>{{bus.LinePublicNumber}}</td>
+                        <td class="p-2">{{translate(bus.TripStopStatus)}}</td>
+                        <td class="p-2">{{bus.DestinationName50}}</td>
+                        <td class="p-2">{{bus.LinePublicNumber}}</td>
                     </tr>
                 </tbody>
             </table>
         </div>
-
+        <br />
     </div>
     <script>
         Vue.createApp({
